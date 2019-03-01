@@ -2363,6 +2363,407 @@ Prohibits some syntax likely to be defined in the future.
 
 **variable scope** = where in your code is your variable.
 
+Learning ReactJS
+==================
+
+The document contains several notes and snippets from interviews to online sources I found helpful. They are in no particular order ether.
+
+These are my personal notes on the subject and I apologize ahead of time if I didn't give credit or sources.
+
+### Facts
+
+- ReactJs is a library and not a framework
+- React is middleware. DOM -> React DOM --> JavaScript.
+
+### Cheat Sheets
+
+- [ReactJS Cheat Sheet](react-cheat-sheet-a.pdf)
+
+### What is React?
+
+React is a JavaScript tool that makes it easy to reason about, construct, and maintain stateless and stateful user interfaces. It provides the means to declaratively define and divide a UI into UI components (a.k.a., React components) using HTML-like nodes called React nodes. React nodes eventually get transformed into a format for UI rendering (e.g., HTML/DOM, canvas, svg, etc.).
+
+### What Is a React Component?
+
+A React component is basically any part of a UI that can contain React nodes (via React.createElement() or JSX).
+
+### Creating a React component
+
+**render()**  A required value, typically a function that returns React nodes, other React components, or null/false
+
+**getInitialState()** Function which returns an object containing initial value of this.state
+
+**getDefaultProps()**  Function which returns an object containing values to be set on this.props
+
+**propTypes** Object containing validation specifications for props
+
+**mixins** Array of mixins (object containing methods) that can be share among components
+
+**statics** Object containing static methods
+
+**displayName** String, naming the component, used in debugging messages. If using JSX this is set automatically.
+
+**componentWillMount()** Callback function invoked once immediately before the initial rendering occurs
+
+**componentDidMount()** Callback function invoked immediately after the initial rendering occurs
+
+**componentWillReceiveProps()** Callback function invoked when a component is receiving new props
+
+**shouldComponentUpdate()** Callback function invoked before rendering when new props or state are being received
+
+**componentWillUpdate()** Callback function invoked immediately before rendering when new props or state are being received.
+
+**componentDidUpdate()** Callback function invoked immediately after the component's updates are flushed to the DOM
+
+**componentWillUnmount()** Callback function invoked immediately before a component is unmounted from the DOM
+
+The most important component configuration option is render. This configuration option is required and is a function that returns React nodes and components. All other component configurations are optional.
+
+```javaScript
+
+var MySelect = React.createClass({ //define MySelect component
+    getInitialState: function(){
+        return {selected: false};
+    },
+    select:function(event) {// added select function
+        if(event.target.textContent === this.state.selected){//remove selection
+            this.setState({selected: false}); //update state
+        }else{//add selection
+            this.setState({selected: event.target.textContent}); //update state
+        }   
+    },
+    render: function(){
+        // using {} to reference a JS variable inside of JSX
+        return <div style={mySelectStyle}></div>; //react div element, via JSX
+    }
+});
+
+var mySelectStyle = {
+    border: '1px solid #999',
+    display: 'inline-block',
+    padding: '5px'
+};
+
+export default MySelect;
+
+```
+
+ES6 way
+
+```javaScript
+
+import React from 'react';
+
+class MySelect extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { likesCount: 0 };
+    this.onLike = this.onLike.bind(this);
+  }
+
+  select (event) {
+    if(event.target.textContent === this.state.selected){ //remove selection
+        this.setState({selected: false}); //update state
+    } else {//add selection
+        this.setState({selected: event.target.textContent}); //update state
+    }   
+  }
+
+  render() {
+      // using {} to reference a JS variable inside of JSX
+      return <div style={mySelectStyle}></div>; //react div element, via JSX
+  }
+}
+
+var mySelectStyle = {
+    border: '1px solid #999',
+    display: 'inline-block',
+    padding: '5px'
+};
+
+export default MySelect;
+
+```
+
+### lifecycle
+
+[Component Lifecycle ReactJS](ComponentLifecycleReactJS.pdf)
+
+**Constructor -> ComponentWillMount -> Render -> ComponentDidMount**
+
+
+### Mounting Cycle
+
+**ComponentDidMount** fires as soon as the render method fires for the first time.
+
+**ComponentWillMount** will fire before initial render. So before render.
+
+## Updating lifecycle
+
+**ComponentWillUpdate** once component has been updated do something.
+
+**ShouldComponentUpdate** performs a logical test to make sure that the component should update.
+
+### What is a React nodes?
+
+React nodes are not real DOM nodes (e.g., text or element nodes) themselves, but a representation of a potential DOM node. The representation is considered the virtual DOM. In a nutshell, React is used to define a virtual DOM using React nodes, that fuel React components, that can eventually be used to create a real DOM structured or other structures (e.g., React Native).
+
+React nodes can be created using JSX or JavaScript. In this chapter we'll look at creating React nodes using JavaScript alone. No JSX yet. I believe that you should first learn what JSX is concealing in order to understand JSX.
+
+
+### Stateless Functional Components
+
+**Stateless Functional Components** are functions that take in property information and return JSX elements.
+
+```javaScript
+
+const MyComponent = (props) => (
+  <div>{prop.title}</div>
+);
+
+```
+Old way
+
+```javaScript
+
+var BadgeBill = React.createClass({
+	render: function() {return <div>Bill</div>;}
+});
+
+var BadgeTom = React.createClass({
+	render: function() {return <div>Tom</div>;}
+});
+
+var BadgeList = React.createClass({
+	render: function() {
+		return (<div>
+			<BadgeBill/>
+			<BadgeTom />
+		</div>);
+	}
+});
+
+ReactDOM.render(<BadgeList />, document.getElementById('app'));
+
+
+```
+
+
+Use stateless components whenever possible. They offer a functional way to work with components, and there is maybe some performance benefits rather then using createClass, or ES6 classes.
+
+**You cannot initialize state in a stateless functional component**
+
+### State
+
+- Identify the minimal representation of app state.
+- Reduce state to as few components as possible.
+- Avoid overriding state.
+
+Non ES6 getInitialState is how we initialize state as the default. So when the app renders for the first time we will use the initial state.
+
+ES6 class with state
+
+```javaScript
+
+import React from 'react';
+
+class AwesomeComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { likesCount: 0 };
+    this.onLike = this.onLike.bind(this);
+  }
+
+  ....
+}
+
+export default AwesomeComponent;
+
+```
+
+### refs
+
+The ref attribute makes it possible to store a reference to a particular React element or component returned by the component render() configuration function. This can be valuable when you need a reference, from within a component, to some element or component contained within the render() function.
+To make a reference, place the ref attribute with a function value on any React element or component. Then, inside of the function, the first parameter within the scope of the function will be a reference to the element or component the ref is on.
+
+**refs** reach out to individual elements to figure out what there value are.
+
+```javaScript
+
+refs = "powder"
+this.refs.power.value
+
+```
+
+```javaScript
+
+var C2 = React.createClass({
+  render: function() {return <span ref={function(span) {console.log(span)}} />}
+});
+
+var C1 = React.createClass({
+  render: function() {return(
+  		<div>
+  			<C2 ref={function(c2) {console.log(c2)}}></C2>
+  			<div ref={function(div) {console.log(div)}}></div>
+		</div>)}
+});
+
+ReactDOM.render(<C1 ref={function(ci) {console.log(ci)}} />,document.getElementById('app'));
+
+```
+
+Using refs inside a stateless component
+
+```javaScript
+
+// no using the this keyword in a stateless callback.
+ref = { input => _resort = input }
+_resort.value;
+
+
+```
+
+### Re-rendering A Component
+
+You likely realize that calling ReactDom.render() is the initial kicking off of the rendering of a component and all sub components.
+
+After the initial mounting of components, a re-rendering will occur when:
+
+1. A component's setState() method is called
+2. A component's forceUpdate() method is called
+
+```javaScript
+
+var Timer = React.createClass({
+    render: function() {
+	  return (
+  		<div>{this.props.now}</div>
+		)
+	}
+});
+
+var App = React.createClass({
+  getInitialState: function() {
+    return {now: Date.now()};
+  },
+
+  componentDidMount: function() {
+	var foo = setInterval(function() {
+		this.setState({now: Date.now()});
+	}.bind(this), 1000);
+
+	setTimeout(function(){ clearInterval(foo); }, 5000);
+	//DON'T DO THIS, JUST DEMONSTRATING .forceUpdate()
+	setTimeout(function(){ this.state.now = 'foo'; this.forceUpdate() }.bind(this), 10000);
+  },
+
+  render: function() {
+	  return (
+  		<Timer now={this.state.now}></Timer>
+		)
+	}
+});
+
+ReactDOM.render(< App / >, app);
+
+```
+
+**NEVER UPDATE THE STATE USING this.state., DID IT HERE TO SHOW USE OF this.forceUpdate().***
+
+Q & A
+===========
+
+What is JSX?
+
+**JSX is JavaScript XML. HTML inside of Javascript.**
+
+---
+
+What makes ReactJS fast?
+
+**React makes use of DOM Diffing and it optimizes by making only the minimal changes necessary**
+
+---
+
+When does the render method fire?
+
+**After the ComponentWillMount method**
+
+---
+
+What is the disadvantage of React?
+
+It is a UI library only. As such when building something with React you will have to include other libraries to handle other parts of an application, such as application state.
+
+- To avoid these pitfalls, it is not enough to just learn React and start coding.
+
+- All the stuff going on in the background. React is mainly written using JSX & ES6, transpiled using Babel and build & packaged using Webpack & npm.
+
+---
+
+
+Explain the React lifecycle.
+
+**Constructor -> ComponentWillMount -> Render -> ComponentDidMount**
+
+
+---
+
+What is a key in React?
+
+**A key unique number assigned to an object in a loop.**
+
+---
+
+What are props?
+
+**props are typically the only way that parent components can interact with their children. When modifying a child, you re-render it with new props.**
+
+
+---
+
+What is Webpack?
+
+**Webpack is a module builder, creates static files, and automates processes**
+
+
+Glossary
+=============
+
+**JSX** = JSX is an XML/HTML-like syntax used by React that extends ECMAScript so that XML/HTML-like text can co-exist with JavaScript/React code.
+
+**ReactJS** = a library for user interfaces. React makes updating the DOM faster by using DOM Diffing.
+
+**DOM Diffing** = Happens when you compare the current rendered content with the new UI changes that are about to be made. React optimizes this by making only the minimal changes necessary. With DOM diffing JavaScript objects are compared and this is much, much, faster than writing to or reading from the actual DOM.
+
+**Webpack** is a module builder, creates statice files, automates processes.
+
+**React.CreateClass** methods need to be separated by commas. Class ClassName Extends components.
+
+**Stateless Functional Components** are functions that take in property information and return JSX elements.
+
+**PropTypes** allows us to supply a property type for all our different properties so that is will validate to make sure were using the right type (this feature is being deprecated in the next version of react).
+
+**props** are typically the only way that parent components can interact with their children. When modifying a child, you re-render it with new props.
+
+**refs** reach out to individual elements to figure out what there value are.
+
+**key** unique number assigned to an object in a loop.
+
+### Yarn
+
+Yarn has a build in bootstrap app for react.
+
+```
+yarn create react-app test
+
+```
+
+### Links
+- https://www.reactenlightenment.com/
+
+
 
 Learning HTML 5
 =================
